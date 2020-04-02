@@ -54,53 +54,50 @@ int isValid(int sud[9][9], int r, int c, int num)
    valido = controlla_riga(sud, r, num) && controlla_colonna(sud, c, num) && controlla_quadrato(sud, r, c, num);
    return valido;
 }
-
 int solve(int sud[9][9], int r, int c)
 {
-   if (r >= 8 && c >= 8) {
-      if (sud[r][c] != 0)
-         return 1;
-      else {
-         int i;
-         int flag = 1;
-         for (i = 1; i < 10; i++) {
-            if (isValid(sud, r, c, i)) {
-               sud[r][c] = i;
-               return 1;
-            } else
-               flag = 0;
-         }
-         if (flag == 0)
-            return 0;
-      }
-   } else {
-      if (sud[r][c] != 0) {
-         if (c < 8)
-            return solve(sud, r, c+1);
-         else
-            return solve(sud, r+1, 0);
-      } else{
-         int i;
-         for (i = 1; i < 10; i++) {
-            if (isValid(sud, r, c, i)) {
-               sud[r][c] = i;
-               if (c<8) {
-                  if (solve(sud, r, c+1)){
-                     return 1;
-                  }else
-                     sud[r][c] = 0;
-               }else {
-                  if (solve(sud, r+1, 0)) {
-                     return 1;
-                  }else
-                     sud[r][c] = 0;
+   if (r==8 && c==8) {
+       if (sud[r][c] != 0)
+           return 1;
+       else {
+           int i = 1;
+           int trovato = 0;
+           while (i<10 && !trovato) {
+               if (isValid(sud, r, c, i)) {
+                   sud[r][c] = i;
+                   trovato = 1;
                }
+               i++;       
             }
-         }
-      }
-      return 0;
-   }
+            return trovato;
+        }
+    }else {
+        if (sud[r][c] != 0) {
+            if (c<8)
+                return solve(sud, r, c+1);
+            else 
+                return solve(sud, r+1, 0);
+        }else {
+            int i = 1;
+            int trovato = 0;
+            while (i<10 && !trovato) {
+                if (isValid(sud, r, c, i)) {
+                    sud[r][c] = i;
+                    if (c<8)
+                        trovato = solve(sud, r, c+1);
+                    else 
+                        trovato = solve(sud, r+1, 0);   
+                    
+                    if (!trovato)
+                        sud[r][c] = 0;
+                }
+                i++;
+            }
+            return trovato;
+        }        
+    }
 }
+
 
 
 int main()
